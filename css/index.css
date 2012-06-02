@@ -1,0 +1,35 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  margin: 0;
+  padding: 0;
+  background-image: url("../png/checker.png");
+  background-repeat: yes;
+}
+.zoom {
+  z-index: 30;
+  position: fixed;
+  left: 10px;
+  top: 60px;
+}
+.teleputer {
+  z-index: 40;
+  position: absolute;
+  left: 200px;
+  top: 200px;
+}
+.overlays {
+  z-index: 40;
+  position: absolute;
+  top: -50px;
+  left: 200px;
+};
+
+.overlays .teleputer {
+  top: 0;
+  position: absolute;
+}
+
+.overlays .teleputer .metadata .tags, .overlays .teleputer .metadata .director, .overlays .teleputer .metadata .year, .overlays .teleputer .metadata .timecode {
+  display: none;
+}

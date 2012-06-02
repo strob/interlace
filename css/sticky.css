@@ -1,0 +1,15 @@
+.sticky {
+  border: 1px solid black;
+  border-left: 3px solid black;
+  padding: 2px;
+  text-transform: uppercase;
+  background-color: white;
+  height: 15px;
+  min-width: 30px;
+  max-width: 200px;
+  overflow: hidden;
+}
+
+.sticky:hover {
+  background-color: orange;
+}

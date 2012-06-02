@@ -1,0 +1,35 @@
+.teleputer .subtitles {
+  position: absolute;
+  right: -20px;
+  bottom: 20px;
+  color: white;
+  font-size: 150%;
+  text-shadow: black 0.1em 0.1em 0.2em;
+  font-weight: bold;
+  min-width: 200px;
+}
+
+.teleputer .metadata {
+  width: 400px;
+  height: 50px;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.teleputer .metadata .source, .teleputer .metadata .tags {
+  width: 10000px;                /*don't wrap*/
+}
+
+.teleputer .metadata .sticky {
+  float: left;
+  margin-right: 10px; 
+}
+
+.teleputer .metadata .tags {
+  clear: both;
+  position: absolute;
+  bottom: 0;
+  height: 25px;
+}

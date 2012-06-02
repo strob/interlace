@@ -1,0 +1,7 @@
+.digest {
+  position: relative;
+}
+.digest .sticky {
+  position: absolute;
+  z-index: 30;
+}
