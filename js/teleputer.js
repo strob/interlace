@@ -5,6 +5,7 @@
 
     var DEFAULTS = {
         vheight: 240,
+        volume: 1
     };
 
     _I_.UI.Teleputer = function(spec) {
@@ -32,23 +33,21 @@
         this.$el.appendChild(this.metadata.$el);
 
         for(var k in DEFAULTS) {
-            this[k] = (spec && spec[k]) || DEFAULTS[k];
+            this[k] = (spec && spec[k] !== undefined) ? spec[k] : DEFAULTS[k];
         }
 
-        this.$videoa.setAttribute("height", this.vheight);
-        this.$videob.setAttribute("height", this.vheight);
+        this.setHeight(this.vheight);
+        this.setVolume(this.volume);
 
-        this.$video.addEventListener("timeupdate", function() {
-	    that.ontimeupdate();
-        }, false);
-        this.$video_off.addEventListener("timeupdate", function() {
-	    that.ontimeupdate();
-        }, false);
+        this.timeupdateEV = function () { that.ontimeupdate(); }
+        this.$video.addEventListener("timeupdate", this.timeupdateEV, false);
+        this.$video_off.addEventListener("timeupdate", this.timeupdateEV, false);
     };
     _I_.UI.Teleputer.prototype = new _I_.UI.Draggable;
 
-    _I_.UI.Teleputer.prototype.set = function(extract) {
+    _I_.UI.Teleputer.prototype.set = function(extract, cb) {
         var that = this;
+        this.extract = extract;
         this.subtitles = [];
         // load subs
         extract.loadSubs(function(subs) { 
@@ -58,25 +57,91 @@
         });
 
         if(extract === this.next) {
-            this.goToNext();
+            this.goToNext(cb);
         }
         else {
-            this.randomAccess(extract);
+            this.randomAccess(extract, cb);
         }
     };
-    _I_.UI.Teleputer.prototype.seek = function(t) {
+    _I_.UI.Teleputer.prototype.seek = function(spec) {
         var that = this;
+        var t = spec.t || this.$video.currentTime + spec.offset;
         this.startSwitching();
+        this.trigger("seek", {offset: t-this.$video.currentTime});
 	_I_.UTIL.videoseek(this.$video, t, function() {
             that.stopSwitching();
             if(!that.ticking)
                 that.tick();
         });
     };
+    _I_.UI.Teleputer.prototype.play = function() {
+        this.$video.play();
+        this.trigger('play');
+    };
+    _I_.UI.Teleputer.prototype.pause = function() {
+        this.$video.pause();
+        this.trigger('pause');
+    };
+    _I_.UI.Teleputer.prototype.setVolume = function(v) {
+        console.log("setVolume", v, this.$video);
+        this.volume = v;
+        this.$videoa.volume = v;
+        this.$videob.volume = v;
+    };
+    _I_.UI.Teleputer.prototype.togglePlayback = function() {
+        if(this.$video.paused) {
+            this.play();
+        }
+        else {
+            this.pause();
+        }
+    };
 
+    _I_.UI.Teleputer.prototype.removeVideo = function() {
+        // kill events, remove from DOM, return.
+        this.$video.removeEventListener("ontimeupdate", this.timeupdateEV, false);
+        this.$el.removeChild(this.$video);
+        return this.$video;
+    };
+    _I_.UI.Teleputer.prototype.addVideo = function($v) {
+        this.$video = $v;
+        if(this.$video_off === this.$videoa) {
+            this.$videob = $v;
+        }
+        else {
+            this.$videoa = $v;
+        }
+        this.$video.addEventListener("ontimeupdate", this.timeupdateEV, false);
 
-    _I_.UI.Teleputer.prototype.goToNext = function() {
+        this.setVolume(this.volume);
+        this.setHeight(this.vheight);
+
+        this.$el.appendChild(this.$video);
+    };
+
+    _I_.UI.Teleputer.prototype.swapVideos = function(TP2) {
+        // ie. without interruption
+
+        var $a = this.removeVideo();
+        var $b = TP2.removeVideo();
+
+        var a = this.extract;
+        this.extract = TP2.extract;
+        TP2.extract = a;
+
+        var s = this.subs;
+        this.subs = TP2.subs;
+        TP2.subs = s;
+
+        TP2.addVideo($a);
+        this.addVideo($b);
+
+        this.play();
+    };
+
+    _I_.UI.Teleputer.prototype.goToNext = function(cb) {
         var $off = this.$video_off;
+        var that = this;
 
         // SWAP BUFFERS
         this.$el.removeChild(this.$video);
@@ -88,13 +153,27 @@
 
         this.extract = this.next;
         this.next = undefined;
+
+        // reset subs (XXX: duplicated code)
+        this.subtitles = [];
+        // load subs
+        (function(extract) {
+            that.extract.loadSubs(function(subs) { 
+                if(that.extract === extract) {
+                    that.subtitles = subs;
+                }
+            });
+        })(this.extract)
+
+        if(cb)
+            cb();
     };
     _I_.UI.Teleputer.prototype.setNext = function(extract) {
         this.next = extract;
         this.$video_off.src = this.next.get('source').getVideo();
         _I_.UTIL.videoseek(this.$video_off, this.next.start, function() {});
     };
-    _I_.UI.Teleputer.prototype.randomAccess = function(extract) {
+    _I_.UI.Teleputer.prototype.randomAccess = function(extract, cb) {
         var that = this;
         if(extract.source !== this.$video.src) {
             this.startSwitching();
@@ -102,6 +181,9 @@
             _I_.UTIL.videoseek(this.$video, extract.start, function() {
                 that.$video.play();
                 that.stopSwitching();
+                that.setVolume(that.volume);
+                if(cb)
+                    cb();
             });
         }
         else if(extract.start > $v.currentTime || extract.start + extract.duration < $v.currentTime) {
@@ -179,20 +261,16 @@
     };
     _I_.UI.Teleputer.prototype.onclick = function(x,y,ev) {
         if(ev.target === this.$video) {
-            if(this.$video.paused) {
-	        this.$video.play();
-            }
-            else {
-	        this.$video.pause();
-            }
+            this.trigger("click", {tp: this});
         }
     };
-    _I_.UI.Teleputer.prototype.ondrag = function(x,y,px,py,ev) {
-        this.vheight += py-y;
-        this.vheight = Math.max(96, this.vheight);
-
+    _I_.UI.Teleputer.prototype.setHeight = function(h) {
+        this.vheight = h;
         this.$videoa.setAttribute("height", this.vheight);
         this.$videob.setAttribute("height", this.vheight);
+    }
+    _I_.UI.Teleputer.prototype.ondrag = function(x,y,px,py,ev) {
+        this.trigger("drag", {dy: py-y, tp: this})
     };
 
 })(_I_);

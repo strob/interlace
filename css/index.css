@@ -15,14 +15,10 @@ body {
 .teleputer {
   z-index: 40;
   position: absolute;
-  left: 200px;
-  top: 200px;
 }
 .overlays {
   z-index: 40;
   position: absolute;
-  top: -50px;
-  left: 200px;
 };
 
 .overlays .teleputer {

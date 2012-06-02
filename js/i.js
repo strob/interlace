@@ -22,13 +22,13 @@ var _I_ = {};
         }
     };
     _I_.Triggerable.prototype.trigger = function (signal, ev) {
-        if( this._bubbleto !== undefined) {
-            this._bubbleto.trigger(signal, ev);
-        }
-        else if (this._signals[signal] !== undefined) {
+        if (this._signals[signal] !== undefined) {
             this._signals[signal].forEach(function (cb) {
                 cb(ev);
             });
+        }
+        if( this._bubbleto !== undefined) {
+            this._bubbleto.trigger(signal, ev);
         }
     };
     _I_.Triggerable.prototype.bubble = function (bubbleto) {
@@ -166,16 +166,23 @@ var _I_ = {};
     };
     _I_.Overlay.prototype.asExtract = function(fromExtract) {
         "returns the appropriately truncated other clip in the overlay as an extract"
-        "a `delay' key (>=0) is added to indicate offset"
+        "a `delay' key (>=0) is added to indicate offset before the overlay starts"
 
         var fromIdx = this.source0 === fromExtract.source ? 0 : 1;
         var idx = (fromIdx + 1) % 2;
+        
+        var fromOffset = this['start'+fromIdx] - fromExtract.start;
+        var fromEnd = Math.min(this['start'+fromIdx] + this.duration, fromExtract.start + fromExtract.duration);
 
-        // trim beginning & end, if necessary
-        var delay = Math.max(0, fromExtract.start - this["start"+fromIdx]);
+        var startEnd = fromEnd + this['start'+idx] - this['start'+fromIdx];
 
-        var start = this["start"+idx] + delay;
-        var duration = Math.min(fromExtract.duration, this.duration) - delay;
+        var delay = fromOffset > 0 ? fromOffset : 0;
+
+        var trimOverlayBeginning = fromOffset < 0 ? -fromOffset : 0;
+
+        var start = this['start'+idx] + trimOverlayBeginning;
+
+        var duration = startEnd - start;
 
         return new _I_.Extract(null, {source: this["source"+idx],
                                      delay: delay,

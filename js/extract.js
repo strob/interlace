@@ -1,5 +1,7 @@
 (function(_I_) {
 
+    var SLIT_FPS = 25;
+
     _I_.UI.Extract = function(extract) {
         _I_.Triggerable.call(this);
         this.extract = extract;
@@ -154,8 +156,19 @@
         var that = this;
         this.trigger("contracted", {extract: that.extract});
     };
-
-    var SLIT_FPS = 25;
+    _I_.UI.Extract.prototype.timeToPx = function(t) {
+        "t is absolute, px is absolute"
+        if(this.expanded) {
+            var rects = getTimeRects(this.extract, this.x, this.h, this.digest_width);
+            var xoffset = (t - this.extract.start)*SLIT_FPS;
+            for(var i=0; i<rects.length; i++) {
+                var r = rects[i];
+                if (xoffset < r.offset + r.right - r.left) {
+                    return {top: this.y + r.top, left: r.left + (xoffset - r.offset)};
+                }
+            }
+        }
+    };
 
     function makeImage(uri, cb) {
         var $img = document.createElement('img');
@@ -203,7 +216,7 @@
 
                         ctx.fillStyle = "orange";
                         overlays.forEach(function(oext, idx) {
-                            ctx.fillRect(oext.delay*SLIT_FPS, 5+idx*10,
+                            ctx.fillRect(oext.delay*SLIT_FPS, 5+(idx%3)*10,
                                          oext.duration*SLIT_FPS, 5);
                         });
 

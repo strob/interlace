@@ -28,8 +28,34 @@
         }
     };
 
+    _I_.UI.Overlays.prototype.pause = function() {
+        for(var oid in this.overlays) {
+            this.overlays[oid].pause();
+        }
+    };
+    _I_.UI.Overlays.prototype.play = function() {
+        for(var oid in this.overlays) {
+            this.overlays[oid].play();
+        }
+    };
+
+    _I_.UI.Overlays.prototype.seek = function(spec) {
+        for(var oid in this.overlays) {
+            this.overlays[oid].seek(spec);
+        }
+    };
+
     _I_.UI.Overlays.prototype.add = function(ovl, source, time) {
-        var tp = new _I_.UI.Teleputer({vheight: 96});
+        // don't exceed 3!
+        var count = 0;
+        for(var key in this.overlays) {
+            count += 1;
+            if(count >= 3) {
+                return;
+            }
+        }
+
+        var tp = new _I_.UI.Teleputer({vheight: 96, volume: 0});
         tp.bubble(this);
         tp.set(ovl.asExtractFromTime(source, time));
         this.overlays[ovl.id] = tp;
