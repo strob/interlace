@@ -3,55 +3,58 @@
         "name": function(extract) { return [extract.get('source').name, 
 				            extract.start]; },
         "tag": function(extract) { return [extract.get('tag').name, 
-				           extract.get('source').year,
+		                           10000 - extract.get('source').year,
 				           extract.get('source').name,
 				           extract.start]; },
         "year": function(extract) { return [extract.get('source').year,
 				            extract.get('source').name,
 				            extract.start]; },
         "director": function(extract) { return [extract.get('source').director,
-				                extract.get('source').year,
+				                10000 - extract.get('source').year,
 				                extract.get('source').name,
 				                extract.start]; }
     };
 
-    var SORT_DEFAULTS = {extract: undefined,
-                         sortby: undefined,
-                         csstype: "div",
-                         cssclass: "sorting"};
+    // var SORT_DEFAULTS = {extract: undefined,
+    //                      sortby: undefined, cssclass;};
     var Sorting = function(spec) {
         _I_.Triggerable.call(this);
 
         if(spec === undefined)
             return
-        for(var key in SORT_DEFAULTS) {
-            this[key] = (spec && spec[key]) || SORT_DEFAULTS[key];
-        }
 
-        this.$el = document.createElement(this.csstype);
-        this.$el.classList.add(this.cssclass);
-        if(this.extract) {
-            this.$el.innerHTML = this.sortby(this.extract)[0];
-        }
-        var that = this;
+        this.$el = document.createElement("div");
+        this.$el.classList.add(spec.cssclass || 'sorting');
 
-        this.$el.onclick = function() {
-            if(that.extract)
-                that.trigger("select", {sortby: that.sortby, extract: that.extract});
-        };
-        this.$el.onmouseover = function() {
-            if(that.extract)
-                that.trigger("preview", {sortby: that.sortby, extract: that.extract});
-        };
-        this.$el.onmouseout = function() {
-            that.trigger("unpreview");
-        };
+        if(spec.extract)
+            this.setExtract(spec.extract);
+        this.setSortby(spec.sortby);
     };
     Sorting.prototype = new _I_.Triggerable;
-    Sorting.prototype.setExtract = function(extract) {
-        if(extract != this.extract) {
-            this.extract = extract;
+    Sorting.prototype.setSortby = function(sortby) {
+        this.sortby = sortby;
+        if(this.extract)
             this.$el.innerHTML = this.sortby(this.extract)[0];
+    }
+    Sorting.prototype.setExtract = function(extract) {
+        if(extract !== this.extract) {
+            if(this.extract === undefined) {
+                var that = this;
+                this.$el.onclick = function() {
+                    if(that.extract && that.extract.id)
+                        that.trigger("select", {sortby: that.sortby, extract: that.extract});
+                };
+                this.$el.onmouseover = function() {
+                    if(that.extract  && that.extract.id )
+                        that.trigger("preview", {sortby: that.sortby, extract: that.extract});
+                };
+                this.$el.onmouseout = function() {
+                    that.trigger("unpreview");
+                };
+            }
+            this.extract = extract;
+            if(this.sortby)
+                this.$el.innerHTML = this.sortby(this.extract)[0];
         }
     };
     Sorting.prototype.position = function(digest) {

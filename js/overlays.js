@@ -58,6 +58,9 @@
         var tp = new _I_.UI.Teleputer({vheight: 96, volume: 0});
         tp.bubble(this);
         tp.set(ovl.asExtractFromTime(source, time));
+        var that = this;
+        tp.bind("done", function() {that.remove(ovl.id);});
+
         this.overlays[ovl.id] = tp;
         this.$el.appendChild(tp.$el);
 

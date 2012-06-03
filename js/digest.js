@@ -16,9 +16,27 @@
         this.extractwidgets = {}; // id -> widget
         this.stickies = {};       // id -> widget
         var that = this;
+
+        var preview = function(spec) { 
+            that.setHighlightFn(function(ex) { return spec.sortby(ex)[0] === spec.sortby(spec.extract)[0]; });
+        }
+        var unpreview = function() { that.remHighlightFn(); }
+        var select = function(spec) { 
+            // simulate click on the first element
+            that.sort(spec.sortby);
+            that.getWidget(spec.extract).trigger("click", {extract: spec.extract, offset: 0});
+            that.getWidget(spec.extract).expand();
+        };
+
         this.extracts.forEach(function(extract) {
             that.extractwidgets[extract.id] = new that.ExtractWidget(extract);
             that.extractwidgets[extract.id].setDigestWidth(document.body.clientWidth); // XXX
+
+            var sticky = that.extractwidgets[extract.id].sticky;
+            sticky.bind("preview", preview);
+            sticky.bind("unpreview", unpreview);
+            sticky.bind("select", select);
+
             that.$el.appendChild(that.getWidget(extract).$el);
         });
     };
@@ -45,7 +63,9 @@
                 cury += that.EH;
             }
         });
+        this.$el.style.height = cury + that.EH;
         this.positionStickies();
+        this.trigger("flowed");
     };
     _I_.UI.Digest.prototype.positionStickies = function() {
         for(var id in this.stickies) {
@@ -63,6 +83,7 @@
         if(this.selected) {
             this.getWidget(this.selected).contract();
         }
+
         this.selected = extract;
         this.getWidget(this.selected).expand();
         this.flow();
@@ -100,6 +121,14 @@
         var prev = undefined;
         this.extracts.forEach(function(ex) {
             var key = sortby(ex)[0];
+
+            if(sortby === _I_.SORT['tag']) {
+                that.getWidget(ex).blueName();
+            }
+            else {
+                that.getWidget(ex).blueTag();
+            }
+
             if(key !== prev) {
                 var sticky = new _I_.Sticky({sortby: sortby, extract: ex});
 

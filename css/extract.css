@@ -71,3 +71,7 @@
   background-repeat: no-repeat;
   pointer-events: none;
 }
+
+.hidden {
+  display: none;
+}

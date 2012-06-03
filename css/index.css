@@ -5,6 +5,8 @@ body {
   padding: 0;
   background-image: url("../png/checker.png");
   background-repeat: yes;
+  width: 100%;
+  overflow-x: hidden;
 }
 .zoom {
   z-index: 30;

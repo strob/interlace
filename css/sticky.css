@@ -4,7 +4,7 @@
   padding: 2px;
   text-transform: uppercase;
   background-color: white;
-  height: 15px;
+  /* height: 15px; */
   min-width: 30px;
   max-width: 200px;
   overflow: hidden;
@@ -12,4 +12,17 @@
 
 .sticky:hover {
   background-color: orange;
+}
+
+.substicky {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  z-index: 20;
+  color: aqua;
+  cursor: pointer;
+}
+.substicky:hover {
+  color: blue;
+  text-decoration: underline;
 }

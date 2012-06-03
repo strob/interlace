@@ -33,7 +33,7 @@
     _I_.UI.Metadata.prototype = new _I_.Triggerable;
     _I_.UI.Metadata.prototype.tick = function(extract, source, time) {
         var that = this;
-        if(this.source != source) {
+        if(this.source !== source) {
             this.source = source;
             ["name", "director", "year"].forEach(function(k) {
                 that[k+'sticky'].setExtract(extract);

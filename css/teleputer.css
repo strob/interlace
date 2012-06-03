@@ -9,22 +9,10 @@
   min-width: 200px;
 }
 
-.teleputer .metadata {
-  width: 400px;
-  height: 50px;
-  overflow: hidden;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.teleputer .metadata .source, .teleputer .metadata .tags {
-  width: 10000px;                /*don't wrap*/
-}
-
 .teleputer .metadata .sticky {
   float: left;
   margin-right: 10px; 
+  line-height: 1em;
 }
 
 .teleputer .metadata .tags {

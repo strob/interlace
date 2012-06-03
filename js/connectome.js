@@ -1,4 +1,5 @@
 var extracts, digest, zoom, teleputer, overlays;
+var preview, unpreview, sort;
 
 _I_.SuperEgo.load(function() {
     extracts = _I_.SuperEgo.all(_I_.Extract);
@@ -8,7 +9,8 @@ _I_.SuperEgo.load(function() {
     zoom = new _I_.UI.Zoom();
     document.body.appendChild(zoom.$el);
     zoom.bind("zoom", function(percent) {
-        digest.zoom(1.33*150*percent,150*percent);
+        var h = Math.max(16, 150*percent);
+        digest.zoom(1.33*h,h);
         digest.flow();
     });
     zoom.setZoom(0.3);
@@ -51,9 +53,7 @@ _I_.SuperEgo.load(function() {
         overlays.tick(spec.source, spec.time);
         var pt = digest.getWidget(teleputer.extract).timeToPx(spec.time);
         if(pt) {
-            teleputer.$el.style.left = pt.left;
-            teleputer.$el.style.top = pt.top + digest.$el.offsetTop - teleputer.vheight;
-
+            teleputer.position(digest, pt);
             overlays.$el.style.left = pt.left;
             overlays.$el.style.top = pt.top + digest.$el.offsetTop - teleputer.vheight - 100;
         }
@@ -61,13 +61,13 @@ _I_.SuperEgo.load(function() {
     });
     document.body.appendChild(overlays.$el);
 
-    function preview(spec) {
+    preview = function (spec) {
         digest.setHighlightFn(function(ex) { return spec.sortby(ex)[0] === spec.sortby(spec.extract)[0]; });
     }
-    function unpreview(spec) {
+    unpreview = function(spec) {
         digest.remHighlightFn();
     }
-    function sort(spec) {
+    sort = function(spec) {
         teleputer.extract = spec.extract;
         digest.select(spec.extract);
         digest.sort(spec.sortby);
@@ -94,10 +94,21 @@ _I_.SuperEgo.load(function() {
             spec.tp.extract = teleputer.extract;
             teleputer.extract = intersects[0];
             teleputer.swapVideos(spec.tp);
+            teleputer.setNext(
+                digest.extracts[(digest.extracts.indexOf(teleputer.extract) + 1) % digest.extracts.length]);
+
+            // scroll to new position
+            document.body.scrollTop = digest.getWidget(intersects[0]).y;
+
         }
         else {
             console.log("no extract to swap with!"); // XXX:
         }
+    });
+    digest.bind("flowed", function() {
+        // scroll to new position
+        if(digest.selected)
+            document.body.scrollTop = digest.getWidget(digest.selected).y;
     });
 
     teleputer.bind("preview", preview);
@@ -116,5 +127,9 @@ _I_.SuperEgo.load(function() {
         spec.tp.setHeight(h);
         spec.tp.setVolume((h - 96) / 100);
     });
+
+    digest.sort(_I_.SORT['tag']);
+
+    document.body.appendChild(_I_.make_credits());
 
 });

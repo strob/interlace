@@ -1,6 +1,7 @@
 (function(_I_) {
 
-    var SLIT_FPS = 25;
+    var SLIT_FPS = 25,
+    SUBSTICKY_WIDTH = 75;
 
     _I_.UI.Extract = function(extract) {
         _I_.Triggerable.call(this);
@@ -32,6 +33,9 @@
         this.$slits.classList.add('slits');
         this.$el.appendChild(this.$slits);
 
+        this.sticky = new _I_.SubSticky({extract:extract, sortby:_I_.SORT['name']});
+        this.$el.appendChild(this.sticky.$el);
+
         var that = this;
         this.$icon.onclick = function() {
             that.trigger("click", {extract: extract, offset: 0});
@@ -39,6 +43,12 @@
         };
     };
     _I_.UI.Extract.prototype = new _I_.Triggerable;
+    _I_.UI.Extract.prototype.blueTag = function() {
+        this.sticky.setSortby(_I_.SORT['tag']);
+    };
+    _I_.UI.Extract.prototype.blueName = function() {
+        this.sticky.setSortby(_I_.SORT['name']);
+    };
     _I_.UI.Extract.prototype.setDigestWidth = function(w) {
         this.digest_width = w;
         if(this.expanded) {
@@ -64,6 +74,14 @@
         this.$el.style.height = h;
         this.x2 = this.x + this.w;
         this.y2 = this.y;
+
+        if(w > SUBSTICKY_WIDTH) {
+            this.sticky.$el.classList.remove('hidden');
+        }
+        else {
+            this.sticky.$el.classList.add('hidden');
+        }
+
         if(this.expanded) {
             this.expand();
         }
