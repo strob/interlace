@@ -4,7 +4,7 @@
 (function(_I_) {
 
     var DEFAULTS = {
-        vheight: 240,
+        vheight: 280,
         volume: 1
     };
 
@@ -87,7 +87,6 @@
         this.trigger('pause');
     };
     _I_.UI.Teleputer.prototype.setVolume = function(v) {
-        console.log("setVolume", v, this.$video);
         this.volume = v;
         this.$videoa.volume = v;
         this.$videob.volume = v;
@@ -344,6 +343,7 @@
             $r.style.left = pt.left;
             $r.style.top = pt.top;
             digest.$el.appendChild($r);
+            return left;
          }
         this.metadata.$el.style.width = this.$video.clientWidth;
     };

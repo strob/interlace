@@ -31,3 +31,15 @@ body {
 .overlays .teleputer .metadata .tags, .overlays .teleputer .metadata .director, .overlays .teleputer .metadata .year, .overlays .teleputer .metadata .timecode {
   display: none;
 }
+
+.subtitles {
+    pointer-events: none;
+}
+
+.overlays .subtitles {
+    font-size: 100%;
+    left: 0;
+}
+.overlays .metadata {
+    pointer-events: none;
+}

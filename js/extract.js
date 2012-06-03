@@ -170,7 +170,7 @@
         this.expanded = false;
         this.$slits.style.display = "none";
         this.$slits.style.opacity = 0;
-        this.$icon.style.opacity = 1;
+        this.$icon.style.opacity = undefined;
         var that = this;
         this.trigger("contracted", {extract: that.extract});
     };

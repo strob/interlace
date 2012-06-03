@@ -53,9 +53,19 @@ _I_.SuperEgo.load(function() {
         overlays.tick(spec.source, spec.time);
         var pt = digest.getWidget(teleputer.extract).timeToPx(spec.time);
         if(pt) {
-            teleputer.position(digest, pt);
-            overlays.$el.style.left = pt.left;
-            overlays.$el.style.top = pt.top + digest.$el.offsetTop - teleputer.vheight - 100;
+            var left = teleputer.position(digest, pt);
+            var ovls = [];
+            var curx = 0;
+            for(var key in overlays.overlays) {
+                ovls.push(overlays.overlays[key].vheight);
+                overlays.overlays[key].$el.style.left = curx;
+                overlays.overlays[key].$el.style.top = 0;
+                curx += overlays.overlays[key].$el.offsetWidth + 20;
+            }
+            if(left)
+                overlays.$el.style.left = left;
+            var max_height = ovls.reduce(function(x,y) { return Math.max(x,y); }, 0);
+            overlays.$el.style.top = pt.top + digest.$el.offsetTop - teleputer.vheight - max_height;
         }
 
     });
@@ -128,10 +138,20 @@ _I_.SuperEgo.load(function() {
 
 
     teleputer.bind("drag", function(spec) {
-        spec.tp.setHeight(Math.max(96, teleputer.vheight + spec.dy));
+
+        var h = Math.min(320, Math.max(220, teleputer.vheight + spec.dy));
+        var offset = 320 - h;
+        var percentage = offset / 100;
+        spec.tp.setHeight(h);
+        spec.tp.setVolume(1-percentage);
+
+        // overlays.tpOffset(offset);
     });
     overlays.bind("drag", function(spec) {
-        var h = Math.min(196, Math.max(96, spec.tp.vheight + spec.dy));
+
+        // XXX: MOVE EVERYTHING (?)
+
+        var h = Math.min(196, Math.max(96, spec.tp.vheight - spec.dy));
         spec.tp.setHeight(h);
         spec.tp.setVolume((h - 96) / 100);
     });
