@@ -8,10 +8,16 @@
   min-width: 30px;
   max-width: 200px;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .sticky:hover {
   background-color: orange;
+}
+
+.sticky.cur {
+   font-weight: bold;
+   font-size: 125%;
 }
 
 .substicky {

@@ -58,7 +58,7 @@
         }
     };
     Sorting.prototype.position = function(digest) {
-        this.$el.style.left = digest.getWidget(this.extract).x;
+        this.$el.style.left = Math.min(digest.width - this.$el.offsetWidth, digest.getWidget(this.extract).x);
         this.$el.style.top = digest.getWidget(this.extract).y;
     };
 
@@ -67,6 +67,14 @@
         Sorting.call(this, spec);
     };
     _I_.Sticky.prototype = new Sorting;
+    _I_.Sticky.prototype.expand = function(exts) {
+        // XXX: compute stats
+        this.$el.classList.add('cur');
+    };
+    _I_.Sticky.prototype.contract = function(exts) {
+        // XXX: compute stats
+        this.$el.classList.remove('cur');
+    };
 
     _I_.SubSticky = function(spec) {
         spec.cssclass = "substicky";

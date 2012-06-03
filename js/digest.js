@@ -3,7 +3,8 @@
         ExtractWidget: _I_.UI.Extract,
         extracts: [],
         EW: 120,
-        EH: 96
+        EH: 96,
+        width: 800
     };
 
     _I_.UI.Digest = function(spec) {
@@ -14,7 +15,7 @@
             this[k] = (spec && spec[k]) || DEFAULTS[k];
         }
         this.extractwidgets = {}; // id -> widget
-        this.stickies = {};       // id -> widget
+        this.stickies = {};       // key -> widget
         var that = this;
 
         var preview = function(spec) { 
@@ -30,7 +31,7 @@
 
         this.extracts.forEach(function(extract) {
             that.extractwidgets[extract.id] = new that.ExtractWidget(extract);
-            that.extractwidgets[extract.id].setDigestWidth(document.body.clientWidth); // XXX
+            that.extractwidgets[extract.id].setDigestWidth(that.width);
 
             var sticky = that.extractwidgets[extract.id].sticky;
             sticky.bind("preview", preview);
@@ -45,20 +46,29 @@
         var that = this;
         this.EW = w;
         this.EH = h;
+
+        if(document.body.clientWidth) {
+            this.width = document.body.clientWidth;
+            this.EW = this.width / Math.floor(this.width / that.EW);
+        }
         this.extracts.forEach(function(extract) {
-            that.getWidget(extract).resize(w,h);
+            that.getWidget(extract).setDigestWidth(that.width);
+            that.getWidget(extract).resize(that.EW,h);
         });
     };
     _I_.UI.Digest.prototype.flow = function() {
         var that = this,
         curx = 0,
         cury = 0;
+        this.width = document.body.clientWidth;
+
         this.extracts.forEach(function(ex) {
             var widg = that.getWidget(ex);
+            widg.setDigestWidth(that.width);
             widg.reposition(curx, cury);
             curx = widg.x2;
             cury = widg.y2;
-            if(curx + 1.2*that.EW > that.$el.offsetWidth) {
+            if(curx + 0.8*that.EW > that.$el.offsetWidth) {
                 curx = 0;
                 cury += that.EH;
             }
@@ -82,6 +92,26 @@
     _I_.UI.Digest.prototype.select = function(extract) {
         if(this.selected) {
             this.getWidget(this.selected).contract();
+        }
+
+        var currentseq = this.sortby(extract)[0];
+        if(currentseq != this.currentseq) {
+            var inseq = [];
+            for(var id in this.extractwidgets) {
+                var w = this.extractwidgets[id];
+                if(this.sortby(w.extract)[0] === currentseq) {
+                    w.$el.classList.add('cur');
+                    inseq.push(w.extract);
+                }
+                else {
+                    w.$el.classList.remove('cur');
+                }
+            }
+
+            if(this.currentseq && this.currentseq in this.stickies)
+                this.stickies[this.currentseq].contract();
+            this.currentseq = currentseq;
+            this.stickies[currentseq].expand(inseq);
         }
 
         this.selected = extract;
@@ -108,6 +138,7 @@
     _I_.UI.Digest.prototype.sort = function(sortby) {
         if(this.sortby === sortby)
             return
+        this.sortby = sortby;
 
         var that = this;
 
@@ -143,7 +174,7 @@
                 });
 
                 that.$el.appendChild(sticky.$el);
-                that.stickies[ex.id] = sticky;
+                that.stickies[key] = sticky;
                 prev = key;
             }
         });

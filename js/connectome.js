@@ -13,7 +13,6 @@ _I_.SuperEgo.load(function() {
         digest.zoom(1.33*h,h);
         digest.flow();
     });
-    zoom.setZoom(0.3);
 
     teleputer = new _I_.UI.Teleputer();
     document.body.appendChild(teleputer.$el);
@@ -71,6 +70,7 @@ _I_.SuperEgo.load(function() {
         teleputer.extract = spec.extract;
         digest.select(spec.extract);
         digest.sort(spec.sortby);
+        teleputer.position(digest);
     }
 
     teleputer.bind("click", function() {
@@ -138,5 +138,8 @@ _I_.SuperEgo.load(function() {
     digest.sort(_I_.SORT['tag']);
 
     document.body.appendChild(_I_.make_credits());
+
+    zoom.setZoom(0.3);
+    zoom.trigger(0.3);
 
 });

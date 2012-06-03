@@ -40,6 +40,18 @@
   opacity: 0.5;
 }
 
+.extract.cur .icon {
+  border: 3px solid white;
+  margin: -3px;
+}
+
+.extract.cur .slits .slitscan {
+  border-top: 3px solid white;
+  border-bottom: 3px solid white;
+  margin-top: -3px;
+  margin-bottom: -3px;
+}
+
 .extract .slits {
   position: absolute;
   top: 0;
