@@ -100,7 +100,7 @@ _I_.SuperEgo.load(function() {
         var extractwidget = digest.getWidget(teleputer.extract);
         var pt = extractwidget.timeToPx(teleputer.$video.currentTime + spec.offset);
         if(pt){
-            console.log("seek to pt", pt);
+            // console.log("seek to pt", pt);
             teleputer.position(digest, pt);
         }
     });

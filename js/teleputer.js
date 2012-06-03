@@ -119,6 +119,8 @@
         this.setVolume(this.volume);
         this.setHeight(this.vheight);
 
+        this.loadSubs();
+
         this.$el.appendChild(this.$video);
     };
 

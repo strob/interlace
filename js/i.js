@@ -193,7 +193,10 @@ var _I_ = {};
 
     _I_.Source.prototype.loadSubs = function(cb) {
         "asynchronous w/naive caching -- hits callback subtitles as a json payload"
-        if(this._subs) { cb(this._subs); }
+        if(this._subs) { 
+            cb(this._subs); 
+            return;
+        }
 
         var that = this;
         _I_.UTIL.load_json(_I_.CONFIG.SDB + this.id + ".json", function(subs) {
@@ -213,15 +216,16 @@ var _I_ = {};
         if(_I_.Source.prototype._getVideo === undefined) {
             var $v = document.createElement('video');
             if($v.canPlayType('video/mp4')) {
-                console.log("MP4 SELECTED");
+                // console.log("MP4 SELECTED");
                 _I_.Source.prototype._getVideo = _I_.Source.prototype.getMov;
             }
             else if($v.canPlayType('video/webm')) {
-                console.log("WEBM SELECTED");
+                // console.log("WEBM SELECTED");
                 _I_.Source.prototype._getVideo = _I_.Source.prototype.getWebm;
             }
             else {
-                console.log("_I_DEO PLAYBACK NOT SUPPORTED");
+                alert("Your web browser does not seem to support HTML5 video. Firefox and Chrome seem to be alright.");
+                // console.log("_I_DEO PLAYBACK NOT SUPPORTED");
             }
         }
         return this._getVideo();
