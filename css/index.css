@@ -11,7 +11,7 @@ body {
 .zoom {
   z-index: 30;
   position: fixed;
-  left: 10px;
+  left: 40px;
   top: 60px;
 }
 .teleputer {
