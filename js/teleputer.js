@@ -345,6 +345,7 @@
             $r.style.top = pt.top;
             digest.$el.appendChild($r);
          }
+        this.metadata.$el.style.width = this.$video.clientWidth;
     };
 
 })(_I_);

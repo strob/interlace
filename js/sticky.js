@@ -58,8 +58,9 @@
         }
     };
     Sorting.prototype.position = function(digest) {
-        this.$el.style.left = Math.min(digest.width - this.$el.offsetWidth, digest.getWidget(this.extract).x);
-        this.$el.style.top = digest.getWidget(this.extract).y;
+        var widg = digest.getWidget(this.extract);
+        this.$el.style.left = Math.min(digest.width - this.$el.offsetWidth, widg.x);
+        this.$el.style.top = widg.y + digest.EH - this.$el.offsetHeight - 5;
     };
 
     _I_.Sticky = function(spec) {
