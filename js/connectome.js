@@ -12,6 +12,7 @@ _I_.SuperEgo.load(function() {
         var h = Math.max(16, 150*percent);
         digest.zoom(1.33*h,h);
         digest.flow();
+        teleputer.position(digest);
     });
 
     teleputer = new _I_.UI.Teleputer();
@@ -141,5 +142,10 @@ _I_.SuperEgo.load(function() {
 
     zoom.setZoom(0.3);
     zoom.trigger(0.3);
+
+    window.addEventListener("resize", function() {
+        digest.flow();
+        teleputer.position(digest);
+    }, false);
 
 });

@@ -117,6 +117,8 @@
         this.selected = extract;
         this.getWidget(this.selected).expand();
         this.flow();
+
+        this.trigger("selected", extract);
     };
 
     _I_.UI.Digest.prototype.setHighlightFn = function(fn) {

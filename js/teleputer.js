@@ -228,6 +228,10 @@
                     .filter(function(x) { return (x.start + x.duration > $v.currentTime) && (x.start < $v.currentTime); });
                 if(subnow.length > 0) {
                     this.$subtitles.innerHTML = subnow[0].text;
+                    this.subtext = subnow[0].text;
+                }
+                else {
+                    this.subtext = "";
                 }
 	    }
             if(!this.ticking) {
@@ -251,7 +255,13 @@
             }
             this.timeout = window.setTimeout(function() { that.tick(); }, 1000/25);
 
-            this.trigger("tick", {extract: this.extract, source: this.extract.get("source"), time: this.$video.currentTime, w: this.$video.offsetWidth, h: this.$video.offsetHeight});
+            this.trigger("tick", {extract: this.extract,
+                                  source: this.extract.get("source"),
+                                  time: this.$video.currentTime,
+                                  w: this.$video.offsetWidth,
+                                  h: this.$video.offsetHeight,
+                                  sub: this.subtext
+                                 });
             
         }
         else {
@@ -319,6 +329,8 @@
         return this.$razor;
     };
     _I_.UI.Teleputer.prototype.position = function(digest, pt) {
+        if(this.extract === undefined)
+            return
         var widget = digest.getWidget(this.extract);
         var pt = pt || widget.timeToPx(this.$video.currentTime);
         if(pt) {
