@@ -283,13 +283,55 @@
         this.trigger("drag", {dy: py-y, tp: this})
     };
     _I_.UI.Teleputer.prototype.makeRazor = function() {
-        // XXX!!!
+        if(this.$razor === undefined) {
+            var W = 30,
+            H = 150;
+
+            this.$razor = document.createElement('canvas');
+            this.$razor.setAttribute('width', W);
+            this.$razor.setAttribute('height', H);
+            this.$razor.classList.add('razor');
+            var ctx = this.$razor.getContext('2d');
+
+            ctx.fillStyle = "#ffa500";
+	    ctx.strokeStyle = "ffa500";
+	    ctx.lineWidth = 2;
+
+            // razor
+	    ctx.beginPath();
+	    ctx.moveTo(W/2, 0);
+	    ctx.lineTo(W/2, H);
+	    ctx.stroke();
+
+            // triangles
+            ctx.beginPath();
+            ctx.moveTo(0,0);
+            ctx.lineTo(W,0);
+            ctx.lineTo(W/2,W/2);
+            ctx.lineTo(0,0);
+
+            ctx.moveTo(0,H);
+            ctx.lineTo(W,H);
+            ctx.lineTo(W/2,H-W/2);
+            ctx.lineTo(0,H);
+            ctx.fill();
+        }
+        return this.$razor;
     };
     _I_.UI.Teleputer.prototype.position = function(digest, pt) {
-        var pt = pt || digest.getWidget(this.extract).timeToPx(this.$video.currentTime);
+        var widget = digest.getWidget(this.extract);
+        var pt = pt || widget.timeToPx(this.$video.currentTime);
         if(pt) {
-            this.$el.style.left = pt.left;
+            var percent = pt.left / widget.digest_width;
+            var left = percent * (widget.digest_width - this.$video.offsetWidth);
+            this.$el.style.left = left;
             this.$el.style.top = pt.top + digest.$el.offsetTop - this.vheight;
+
+            var $r = this.makeRazor();
+            $r.style.height = digest.EH;
+            $r.style.left = pt.left;
+            $r.style.top = pt.top;
+            digest.$el.appendChild($r);
          }
     };
 

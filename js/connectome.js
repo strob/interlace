@@ -85,6 +85,13 @@ _I_.SuperEgo.load(function() {
     });
     teleputer.bind("seek", function(spec) {
         overlays.seek(spec);
+
+        var extractwidget = digest.getWidget(teleputer.extract);
+        var pt = extractwidget.timeToPx(teleputer.$video.currentTime + spec.offset);
+        if(pt){
+            console.log("seek to pt", pt);
+            teleputer.position(digest, pt);
+        }
     });
 
     overlays.bind("click", function(spec) {

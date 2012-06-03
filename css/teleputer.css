@@ -21,3 +21,8 @@
   bottom: 0;
   height: 25px;
 }
+
+.razor {
+  position: absolute;
+  z-index: 100;
+}
