@@ -8,6 +8,17 @@
         this.$el.classList.add('overlays');
 
         this.overlays = {};     // id -> TelePuter
+
+        this.available_teleputers = []; // we keep a fixed number of
+                                        // TPS to avoid use of more
+                                        // than 6 <video> elements...
+        var that = this;
+        for(var i=0; i<3; i++) {
+            var tp = new _I_.UI.Teleputer({vheight: 96, volume: 0});
+            tp.bubble(this);
+            tp.bind("done", function() {that.remove(ovl.id);});
+            this.available_teleputers.push(tp);
+        }
     };
     _I_.UI.Overlays.prototype = new _I_.Triggerable;
 
@@ -47,20 +58,12 @@
 
     _I_.UI.Overlays.prototype.add = function(ovl, source, time) {
         // don't exceed 3!
-        var count = 0;
-        for(var key in this.overlays) {
-            count += 1;
-            if(count >= 3) {
-                return;
-            }
+        if(this.available_teleputers.length == 0) {
+            return;
         }
 
-        var tp = new _I_.UI.Teleputer({vheight: 96, volume: 0});
-        tp.bubble(this);
+        var tp = this.available_teleputers.pop();
         tp.set(ovl.asExtractFromTime(source, time));
-        var that = this;
-        tp.bind("done", function() {that.remove(ovl.id);});
-
         this.overlays[ovl.id] = tp;
         this.$el.appendChild(tp.$el);
         this.position();
@@ -72,25 +75,12 @@
             i+= 1;
         }
     };
-    // _I_.UI.Overlays.prototype.tpOffset = function(offset) {
-    //     var ovl_offsets = [];
-    //     for(var key in this.overlays) {
-    //         ovl_offsets.push(this.overlays[key].vheight - 96);
-    //     }
-    //     var max_offset = ovl_offsets.reduce(function(a,b) { return Math.max(a,b); }, 0);
-    //     if(max_offset > 0) {
-    //         var ovl_offset_height_scale = (100-offset) / max_offset;
-
-    //         for(var key in this.overlays) {
-    //             this.overlays[key].setHeight(Math.min(this.overlays[key].vheight, 96 + (this.overlays[key].vheight-96) * ovl_offset_height_scale));
-    //             this.overlays[key].setVolume(this.overlays[key].vheight - 96);
-    //         }
-    //     }
-    // };
     _I_.UI.Overlays.prototype.remove = function(ovlid) {
         var tp = this.overlays[ovlid];
-        tp.$video.src = "";
+        tp.$videoa.src = "";
+        tp.$videob.src = "";
         this.$el.removeChild(tp.$el);
+        this.available_teleputers.push(tp);
         delete this.overlays[ovlid];
 
         this.position();
