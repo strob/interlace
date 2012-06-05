@@ -123,6 +123,12 @@ _I_.SuperEgo.load(function() {
             console.log("no extract to swap with!"); // XXX:
         }
     });
+    overlays.bind("loaded", function(spec) {
+        // check that initial state matches teleputer
+        if(teleputer.$video.paused) {
+            spec.tp.pause();
+        }
+    });
     digest.bind("flowed", function() {
         // scroll to new position
         if(digest.selected)

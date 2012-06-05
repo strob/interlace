@@ -181,6 +181,9 @@
             }
         });
         this.trigger("sorted");
-        this.flow();
+        if(this.selected !== undefined)
+            this.select(this.selected);
+        else
+            this.flow();
     };
 })(_I_);

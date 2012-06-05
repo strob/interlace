@@ -162,15 +162,17 @@
             that.trigger("expanded", {extract: that.extract});
         })
 
-        this.$icon.style.opacity = 0;
+        this.$el.classList.add('expanded');
+        // this.$icon.style.opacity = 0;
         this.$slits.style.display = "block";
-        this.$slits.style.opacity = 1;
+        // this.$slits.style.opacity = 1;
     };
     _I_.UI.Extract.prototype.contract = function() {
         this.expanded = false;
+        this.$el.classList.remove('expanded');
         this.$slits.style.display = "none";
-        this.$slits.style.opacity = 0;
-        this.$icon.style.opacity = undefined;
+        // this.$slits.style.opacity = 0;
+        // this.$icon.style.opacity = "inherit";
         var that = this;
         this.trigger("contracted", {extract: that.extract});
     };

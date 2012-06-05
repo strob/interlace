@@ -172,6 +172,7 @@
         // reset subs (XXX: duplicated code)
         this.loadSubs();
 
+        that.trigger("loaded", {tp: this, extract: this.extract});
         if(cb)
             cb();
     };
@@ -189,6 +190,7 @@
                 that.$video.play();
                 that.stopSwitching();
                 that.setVolume(that.volume);
+                that.trigger("loaded", {tp: that, extract: extract});
                 if(cb)
                     cb();
             });
@@ -306,7 +308,7 @@
 
             ctx.fillStyle = "#ffa500";
 	    ctx.strokeStyle = "ffa500";
-	    ctx.lineWidth = 2;
+	    ctx.lineWidth = 4;
 
             // razor
 	    ctx.beginPath();
@@ -342,7 +344,7 @@
 
             var $r = this.makeRazor();
             $r.style.height = digest.EH;
-            $r.style.left = pt.left;
+            $r.style.left = pt.left - digest.EH/10;
             $r.style.top = pt.top;
             digest.$el.appendChild($r);
             return left;

@@ -32,17 +32,13 @@
   -o-transition-duration: 1s;
 }
 
-.extract.highlight {
-  background-color: orange;
-}
 .extract.cur {
   background-color: aqua;
 }
 
-.extract.highlight .icon, .extract.highlight .slits {
-  opacity: 0.5;
+.extract.highlight {
+  background-color: orange;
 }
-
 .extract.cur .icon {
   opacity: 0.7;
 }
@@ -71,6 +67,18 @@
 
 .extract .slits .slitscan {
   position: absolute;
+}
+.extract.highlight .icon {
+  opacity: 0.5;
+}
+.extract.expanded .icon {
+  opacity: 0;
+}
+.extract .slits {
+  opacity: 0;
+}
+.extract.expanded .slits {
+  opacity: 1;
 }
 
 .hasoverlays {

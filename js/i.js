@@ -248,7 +248,7 @@ var _I_ = {};
     };
 
     _I_.SuperEgo = {
-        obj: {},
+        obj: {}
     };
     _I_.SuperEgo.all = function(dtype) {
         // cache

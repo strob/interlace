@@ -4,7 +4,7 @@
         nsteps: 10,
         width: 20,
         height: 152,
-        percentage: 0.5,
+        percentage: 0.5
     };
         
     _I_.UI.Zoom = function(spec) {
