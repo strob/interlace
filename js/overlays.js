@@ -5,7 +5,7 @@
         _I_.Triggerable.call(this);
 
         this.$el = document.createElement('div');
-        this.$el.classList.add('overlays');
+         _I_.UTIL.classListAdd(this.$el,'overlays');
 
         this.overlays = {};     // id -> TelePuter
 

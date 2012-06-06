@@ -10,7 +10,7 @@
 
     _I_.UI.Teleputer = function(spec) {
         _I_.UI.Draggable.call(this);
-        this.$el.classList.add('teleputer');
+        _I_.UTIL.classListAdd(this.$el,'teleputer');
 
         this.$videoa = document.createElement('video');
         this.$videob = document.createElement('video'); // DOUBLE BUFFER!
@@ -19,7 +19,7 @@
         this.$video_off = this.$videob;
 
         this.$subtitles = document.createElement('div');
-        this.$subtitles.classList.add('subtitles');
+         _I_.UTIL.classListAdd(this.$subtitles,'subtitles');
         this.$el.appendChild(this.$subtitles);
         this.$el.appendChild(this.$video);
 
@@ -303,7 +303,7 @@
             this.$razor = document.createElement('canvas');
             this.$razor.setAttribute('width', W);
             this.$razor.setAttribute('height', H);
-            this.$razor.classList.add('razor');
+            _I_.UTIL.classListAdd(this.$razor,'razor');
             var ctx = this.$razor.getContext('2d');
 
             ctx.fillStyle = "#ffa500";

@@ -9,7 +9,7 @@
         
     _I_.UI.Zoom = function(spec) {
         _I_.UI.Draggable.call(this, "canvas");
-        this.$el.classList.add('zoom');
+         _I_.UTIL.classListAdd(this.$el,'zoom');
 
         for(var k in DEFAULTS) {
             this[k] = (spec && spec[k]) || DEFAULTS[k];

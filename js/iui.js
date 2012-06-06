@@ -5,7 +5,7 @@
 
         _I_.Triggerable.call(this);
         this.$el = document.createElement(div || "div");
-        this.$el.classList.add('draggable');
+        _I_.UTIL.classListAdd(this.$el,'draggable');
         var that = this;
         this.$el.onmousedown = function(ev) {
 	    ev.preventDefault();

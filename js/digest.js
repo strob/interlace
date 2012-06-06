@@ -10,7 +10,7 @@
     _I_.UI.Digest = function(spec) {
         _I_.Triggerable.call(this);
         this.$el = document.createElement('div');
-        this.$el.classList.add('digest');
+        _I_.UTIL.classListAdd(this.$el, 'digest');
         for(var k in DEFAULTS) {
             this[k] = (spec && spec[k]) || DEFAULTS[k];
         }
@@ -113,11 +113,11 @@
             for(var id in this.extractwidgets) {
                 var w = this.extractwidgets[id];
                 if(this.sortby(w.extract)[0] === currentseq) {
-                    w.$el.classList.add('cur');
+                    _I_.UTIL.classListAdd(w.$el, 'cur');
                     inseq.push(w.extract);
                 }
                 else {
-                    w.$el.classList.remove('cur');
+                    _I_.UTIL.classListRemove(w.$el, 'cur');
                 }
             }
 

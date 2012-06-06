@@ -7,7 +7,7 @@
         _I_.Triggerable.call(this);
         this.extract = extract;
         this.$el = document.createElement('div');
-        this.$el.classList.add('extract');
+        _I_.UTIL.classListAdd(this.$el, 'extract');
 
         this.x=0;
         this.y=0;
@@ -20,17 +20,17 @@
 
         this.$icon = document.createElement('img');
         this.$icon.src = this.extract.getCuts()[0].composite;
-        this.$icon.classList.add('icon');
+        _I_.UTIL.classListAdd(this.$icon,'icon');
         this.$el.appendChild(this.$icon);
 
         if(extract.getOverlays().length > 0) {
             this.$hasoverlays = document.createElement('div');
-            this.$hasoverlays.classList.add('hasoverlays');
+            _I_.UTIL.classListAdd(this.$hasoverlays,'hasoverlays');
             this.$el.appendChild(this.$hasoverlays);
         }
 
         this.$slits = document.createElement('div');
-        this.$slits.classList.add('slits');
+        _I_.UTIL.classListAdd(this.$slits,'slits');
         this.$el.appendChild(this.$slits);
 
         this.sticky = new _I_.SubSticky({extract:extract, sortby:_I_.SORT['name']});
@@ -73,10 +73,10 @@
         this.y2 = this.y;
 
         if(w > SUBSTICKY_WIDTH) {
-            this.sticky.$el.classList.remove('hidden');
+            _I_.UTIL.classListRemove(this.sticky.$el,'hidden');
         }
         else {
-            this.sticky.$el.classList.add('hidden');
+            _I_.UTIL.classListAdd(this.sticky.$el,'hidden');
         }
 
         if(this.expanded) {
@@ -84,10 +84,10 @@
         }
     };
     _I_.UI.Extract.prototype.highlight = function() {
-        this.$el.classList.add('highlight');
+        _I_.UTIL.classListAdd(this.$el,'highlight');
     };
     _I_.UI.Extract.prototype.unhighlight = function() {
-        this.$el.classList.remove('highlight');
+        _I_.UTIL.classListRemove(this.$el,'highlight');
     };
 
     var getTimeRects = function(extract, startx, slit_height, width) {
@@ -129,7 +129,7 @@
 
             getTimeRects(that.extract, that.x, that.h, that.digest_width).forEach(function(r) {
                 var $canvas = document.createElement('canvas');
-                $canvas.classList.add('slitscan');
+                _I_.UTIL.classListAdd($canvas,'slitscan');
                 $canvas.setAttribute('width', r.right-r.left);
                 $canvas.setAttribute('height', r.bottom-r.top);
 
@@ -159,14 +159,14 @@
             that.trigger("expanded", {extract: that.extract});
         })
 
-        this.$el.classList.add('expanded');
+        _I_.UTIL.classListAdd(this.$el,'expanded');
         // this.$icon.style.opacity = 0;
         this.$slits.style.display = "block";
         // this.$slits.style.opacity = 1;
     };
     _I_.UI.Extract.prototype.contract = function() {
         this.expanded = false;
-        this.$el.classList.remove('expanded');
+        _I_.UTIL.classListRemove(this.$el,'expanded');
         this.$slits.style.display = "none";
         // this.$slits.style.opacity = 0;
         // this.$icon.style.opacity = "inherit";

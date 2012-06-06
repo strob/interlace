@@ -216,13 +216,13 @@ var _I_ = {};
         "figures out which to return automatically"
         if(_I_.Source.prototype._getVideo === undefined) {
             var $v = document.createElement('video');
-            if($v.canPlayType('video/mp4')) {
-                // console.log("MP4 SELECTED");
-                _I_.Source.prototype._getVideo = _I_.Source.prototype.getMov;
-            }
-            else if($v.canPlayType('video/webm')) {
+            if($v.canPlayType('video/webm')) {
                 // console.log("WEBM SELECTED");
                 _I_.Source.prototype._getVideo = _I_.Source.prototype.getWebm;
+            }
+            else if($v.canPlayType('video/mp4')) {
+                // console.log("MP4 SELECTED");
+                _I_.Source.prototype._getVideo = _I_.Source.prototype.getMov;
             }
             else {
                 alert("Your web browser does not seem to support HTML5 video. Firefox and Chrome seem to be alright.");
@@ -308,6 +308,29 @@ var _I_ = {};
         return a.start + a.duration > b.start &&
             a.start < b.start + b.duration;
     };
-
+    _I_.UTIL.classList = function($el) {
+        return $el.className.split(' ');
+    };
+    _I_.UTIL.classListAdd = function($el, cls) {
+        var list = _I_.UTIL.classList($el);
+        for(var i=0; i<list.length; i++) {
+            if(list[i] === cls)
+                return
+        }
+        $el.className += ' '+cls;
+    };
+    _I_.UTIL.classListRemove = function($el, cls) {
+        var list = _I_.UTIL.classList($el);
+        for(var i=0; i<list.length; i++) {
+            if(list[i] === cls) {
+                var acc = '';
+                list.splice(i, 1);
+                list.forEach(function(x) { 
+                    acc += ' '+x;
+                });
+                $el.className = acc;
+            }
+        }
+    };
 
 })(_I_);

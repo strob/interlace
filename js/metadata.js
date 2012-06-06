@@ -2,30 +2,30 @@
     _I_.UI.Metadata = function() {
         _I_.Triggerable.call(this);
         this.$el = document.createElement('div');
-        this.$el.classList.add('metadata');
+        _I_.UTIL.classListAdd(this.$el,'metadata');
 
         this.$source = document.createElement('div');
-        this.$source.classList.add('source');
+        _I_.UTIL.classListAdd(this.$source,'source');
 
         var that = this;
         ["name", "director", "year"].forEach(function(k) {
             var sticky = new _I_.Sticky({sortby: _I_.SORT[k]});
             that.$source.appendChild(sticky.$el);
-            sticky.$el.classList.add(k);
+            _I_.UTIL.classListAdd(sticky.$el,k);
 
             sticky.bubble(that);
 
             that[k+'sticky'] = sticky;
         });
         this.$timecode = document.createElement('div');
-        this.$timecode.classList.add('sticky');
-        this.$timecode.classList.add('timecode');
+        _I_.UTIL.classListAdd(this.$timecode,'sticky');
+        _I_.UTIL.classListAdd(this.$timecode,'timecode');
         this.$source.appendChild(this.$timecode);
 
         this.$el.appendChild(this.$source);
 
         this.$tags = document.createElement('div');
-        this.$tags.classList.add('tags');
+         _I_.UTIL.classListAdd(this.$tags,'tags');
         this.$el.appendChild(this.$tags);
 
         this.tags = {};         // id -> sticky
@@ -53,7 +53,7 @@
             if(!(eid in this.tags)) {
                 // ADD
                 var sticky = new _I_.Sticky({sortby: _I_.SORT.tag, extract: newtags[eid]});
-                sticky.$el.classList.add('tag');
+                 _I_.UTIL.classListAdd(sticky.$el,'tag');
 
                 // relay events ...
                 sticky.bubble(that);

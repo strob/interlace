@@ -24,7 +24,7 @@
             return
 
         this.$el = document.createElement("div");
-        this.$el.classList.add(spec.cssclass || 'sorting');
+         _I_.UTIL.classListAdd(this.$el,spec.cssclass || 'sorting');
 
         if(spec.extract)
             this.setExtract(spec.extract);
@@ -71,11 +71,11 @@
     _I_.Sticky.prototype = new Sorting;
     _I_.Sticky.prototype.expand = function(exts) {
         // XXX: compute stats
-        this.$el.classList.add('cur');
+         _I_.UTIL.classListAdd(this.$el,'cur');
     };
     _I_.Sticky.prototype.contract = function(exts) {
         // XXX: compute stats
-        this.$el.classList.remove('cur');
+         _I_.UTIL.classListAdd(this.$el,'cur');
     };
 
     _I_.SubSticky = function(spec) {
