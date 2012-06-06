@@ -42,7 +42,7 @@
                 var that = this;
                 this.$el.onclick = function() {
                     if(that.extract && that.extract.id)
-                        that.trigger("select", {sortby: that.sortby, extract: that.extract});
+                        that.trigger("select", {sortby: that.sortby, sortkey: that.sortkey, extract: that.extract});
                 };
                 this.$el.onmouseover = function() {
                     if(that.extract  && that.extract.id )
@@ -53,8 +53,9 @@
                 };
             }
             this.extract = extract;
-            if(this.sortby)
+            if(this.sortby) {
                 this.$el.innerHTML = this.sortby(this.extract)[0];
+            }
         }
     };
     Sorting.prototype.position = function(digest) {

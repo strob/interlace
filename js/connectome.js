@@ -79,8 +79,10 @@ _I_.SuperEgo.load(function() {
     }
     sort = function(spec) {
         teleputer.extract = spec.extract;
-        digest.select(spec.extract);
-        digest.sort(spec.sortby);
+
+        //digest.select(spec.extract, true);
+        digest.sort(spec.sortby, spec.extract);
+
         teleputer.position(digest);
     }
 

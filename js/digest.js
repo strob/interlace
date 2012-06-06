@@ -33,10 +33,10 @@
             that.extractwidgets[extract.id] = new that.ExtractWidget(extract);
             that.extractwidgets[extract.id].setDigestWidth(that.width);
 
-            var sticky = that.extractwidgets[extract.id].sticky;
-            sticky.bind("preview", preview);
-            sticky.bind("unpreview", unpreview);
-            sticky.bind("select", select);
+            // var sticky = that.extractwidgets[extract.id].sticky;
+            // sticky.bind("preview", preview);
+            // sticky.bind("unpreview", unpreview);
+            // sticky.bind("select", select);
 
             that.$el.appendChild(that.getWidget(extract).$el);
         });
@@ -62,19 +62,30 @@
         cury = 0;
         this.width = document.body.clientWidth;
 
+        //console.log("START FLOW LOOP");
+
         this.extracts.forEach(function(ex) {
             var widg = that.getWidget(ex);
             widg.setDigestWidth(that.width);
             widg.reposition(curx, cury);
             curx = widg.x2;
             cury = widg.y2;
-            if(curx + 0.8*that.EW > that.$el.offsetWidth) {
+            if(curx + 0.8*that.EW > that.width) {
                 curx = 0;
                 cury += that.EH;
             }
         });
+
+        //console.log("END FLOW LOOP");
+
         this.$el.style.height = cury + that.EH;
+
+        //console.log("POSITION STICKIES");
+
         this.positionStickies();
+
+        //console.log("TRIGGER FLOWED");
+
         this.trigger("flowed");
     };
     _I_.UI.Digest.prototype.positionStickies = function() {
@@ -89,11 +100,13 @@
         var $el = this.getWidget(extract).$el;
         return {left: $el.offsetLeft, top: $el.offsetTop};
     };
-    _I_.UI.Digest.prototype.select = function(extract) {
+    _I_.UI.Digest.prototype.select = function(extract, dontflow) {
+        //console.log("SELECT");
         if(this.selected) {
             this.getWidget(this.selected).contract();
         }
 
+        //console.log("AQUAFYING");
         var currentseq = this.sortby(extract)[0];
         if(currentseq != this.currentseq) {
             var inseq = [];
@@ -110,14 +123,17 @@
 
             if(this.currentseq && this.currentseq in this.stickies)
                 this.stickies[this.currentseq].contract();
+
             this.currentseq = currentseq;
             this.stickies[currentseq].expand(inseq);
         }
 
+        //console.log("DONE AQUAFYING");
         this.selected = extract;
+        //console.log("SEL_EXPANDING?!");
         this.getWidget(this.selected).expand();
+        //console.log("SEL_FLOWING?!");
         this.flow();
-
         this.trigger("selected", extract);
     };
 
@@ -137,52 +153,52 @@
                 that.getWidget(ex).unhighlight();
             });
     };
-    _I_.UI.Digest.prototype.sort = function(sortby) {
-        if(this.sortby === sortby)
-            return
-        this.sortby = sortby;
+    _I_.UI.Digest.prototype.sort = function(sortby, extract) {
+        if(this.sortby !== sortby) {
+            this.sortby = sortby;
 
-        var that = this;
+            var that = this;
 
-        for(var id in this.stickies) {
-            this.$el.removeChild(this.stickies[id].$el);
-            delete this.stickies[id];
+            for(var id in this.stickies) {
+                this.$el.removeChild(this.stickies[id].$el);
+                delete this.stickies[id];
+            }
+
+            this.extracts.sort(function(x,y) { return sortby(x) > sortby(y) ? 1 : -1; });
+
+            var prev = undefined;
+            this.extracts.forEach(function(ex) {
+                var key = sortby(ex)[0];
+
+                if(sortby === _I_.SORT['tag']) {
+                    that.getWidget(ex).blueName();
+                }
+                else {
+                    that.getWidget(ex).blueTag();
+                }
+
+                if(key !== prev) {
+                    var sticky = new _I_.Sticky({sortby: sortby, extract: ex});
+
+                    sticky.bind("preview", function(spec) { 
+                        that.setHighlightFn(function(ex) { return spec.sortby(ex)[0] === spec.sortby(spec.extract)[0]; });
+                    });
+                    sticky.bind("unpreview", function() { that.remHighlightFn(); });
+                    sticky.bind("select", function(spec) { 
+                        // simulate click on the first element
+                        that.getWidget(ex).trigger("click", {extract: ex, offset: 0});
+                        that.getWidget(ex).expand();
+                    });
+
+                    that.$el.appendChild(sticky.$el);
+                    that.stickies[key] = sticky;
+                    prev = key;
+                }
+            });
+            this.trigger("sorted");
         }
-
-        this.extracts.sort(function(x,y) { return sortby(x) > sortby(y) ? 1 : -1; });
-
-        var prev = undefined;
-        this.extracts.forEach(function(ex) {
-            var key = sortby(ex)[0];
-
-            if(sortby === _I_.SORT['tag']) {
-                that.getWidget(ex).blueName();
-            }
-            else {
-                that.getWidget(ex).blueTag();
-            }
-
-            if(key !== prev) {
-                var sticky = new _I_.Sticky({sortby: sortby, extract: ex});
-
-                sticky.bind("preview", function(spec) { 
-                    that.setHighlightFn(function(ex) { return spec.sortby(ex)[0] === spec.sortby(spec.extract)[0]; });
-                });
-                sticky.bind("unpreview", function() { that.remHighlightFn(); });
-                sticky.bind("select", function(spec) { 
-                    // simulate click on the first element
-                    that.getWidget(ex).trigger("click", {extract: ex, offset: 0});
-                    that.getWidget(ex).expand();
-                });
-
-                that.$el.appendChild(sticky.$el);
-                that.stickies[key] = sticky;
-                prev = key;
-            }
-        });
-        this.trigger("sorted");
-        if(this.selected !== undefined)
-            this.select(this.selected);
+        if(extract !== undefined || this.selected !== undefined)
+            this.select(extract || this.selected);
         else
             this.flow();
     };

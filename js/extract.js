@@ -51,9 +51,6 @@
     };
     _I_.UI.Extract.prototype.setDigestWidth = function(w) {
         this.digest_width = w;
-        if(this.expanded) {
-            this.expand();
-        }
     }
     _I_.UI.Extract.prototype.reposition = function(x, y) {
         this.x = x;

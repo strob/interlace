@@ -22,6 +22,7 @@ var _I_ = {};
         }
     };
     _I_.Triggerable.prototype.trigger = function (signal, ev) {
+        //console.log("(TRIGGER)", signal, this);
         if (this._signals[signal] !== undefined) {
             this._signals[signal].forEach(function (cb) {
                 cb(ev);

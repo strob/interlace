@@ -38,6 +38,11 @@
             ["name", "director", "year"].forEach(function(k) {
                 that[k+'sticky'].setExtract(extract);
             });
+            // XXX: force reflow in Chrome.
+            this.$source.style.display = "none";
+            window.setTimeout(function() {
+                that.$source.style.display = "block";
+            }, 50, false);
         }
         this.$timecode.innerHTML = format_time(time);
         var newtags = {};
