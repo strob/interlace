@@ -39,15 +39,11 @@ _I_.SuperEgo.load(function() {
             teleputer.set(spec.extract, function() {
                 if(spec.offset)
                     teleputer.seek(spec);
+                teleputer.setNext(
+                    digest.extracts[(digest.extracts.indexOf(spec.extract) + 1) % digest.extracts.length]);
             });
-            teleputer.setNext(
-                digest.extracts[(digest.extracts.indexOf(spec.extract) + 1) % digest.extracts.length]);
         }
     }
-    extracts.forEach(function(extract) {
-        digest.getWidget(extract).bind("click", onclick);
-    });
-
     overlays = new _I_.UI.Overlays();
     teleputer.bind("tick", function(spec) {
         overlays.tick(spec.source, spec.time);
@@ -85,6 +81,20 @@ _I_.SuperEgo.load(function() {
 
         teleputer.position(digest);
     }
+
+    extracts.forEach(function(extract) {
+        digest.getWidget(extract).bind("click", onclick);
+
+        digest.getWidget(extract).sticky.bind("preview", preview);
+        digest.getWidget(extract).sticky.bind("unpreview", unpreview);
+        digest.getWidget(extract).sticky.bind("select", function(spec) {
+            digest.sort(spec.sortby, spec.extract);
+            teleputer.set(spec.extract, function() {
+                teleputer.setNext(
+                    digest.extracts[(digest.extracts.indexOf(spec.extract) + 1) % digest.extracts.length]);
+            });
+        });
+    });
 
     teleputer.bind("click", function() {
         teleputer.togglePlayback();
