@@ -37,12 +37,13 @@ _I_.SuperEgo.load(function() {
         else {
             digest.select(spec.extract);
             teleputer.set(spec.extract, function() {
-                if(spec.offset)
+                if(spec.offset) {
                     teleputer.seek(spec);
-                teleputer.setNext(
-                    digest.extracts[(digest.extracts.indexOf(spec.extract) + 1) % digest.extracts.length]);
+                }
             });
         }
+        teleputer.setNext(
+            digest.extracts[(digest.extracts.indexOf(spec.extract) + 1) % digest.extracts.length]);
     }
     overlays = new _I_.UI.Overlays();
     teleputer.bind("tick", function(spec) {
