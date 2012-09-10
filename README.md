@@ -23,3 +23,19 @@ Essentially, there are two modes of access:
 The software is structured so that (2) can run independent of all
 server infrastructure, ie. from offline media like SD cards.
 
+
+## Installation
+
+Install dependencies
+
+```sudo apt-get install nodejs npm
+npm install socket.io
+```
+
+Clone the repository and submodules
+
+```git clone https://github.com/strob/interlace.git
+cd interlace
+git submodule init
+```
+
