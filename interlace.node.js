@@ -1,7 +1,12 @@
 // InterLace Node.js server component
 
 var express = require('express');
-var resumable = require('resumable')('/tmp/InterLace_uploads/');
+
+var UPLOAD_DIR = '/tmp/InterLace_uploads'
+  , MEDIA_DIR = __dirname + '/static/media/'
+  , resumable = require('resumable')(UPLOAD_DIR)
+  , encode = require('encode')(UPLOAD_DIR, MEDIA_DIR);
+
 var app = express();//.createServer();
 
 // Static
@@ -25,6 +30,10 @@ app.post('/upload', function(req, res){
             // NOTE: Uncomment this funciton to enable cross-domain request.
             //'Access-Control-Allow-Origin': '*'
         });
+
+        if(status === 'done') {
+            encode.onupload(identifier, filename);
+        }
     });
 });
 
