@@ -28,18 +28,27 @@ server infrastructure, ie. from offline media like SD cards.
 
 Clone the repository and submodules
 
-```git clone https://github.com/strob/interlace.git
+```bash
+git clone https://github.com/strob/interlace.git
 cd interlace
 git submodule init
 ```
 
 Install dependencies for Node
 
-```sudo apt-get install nodejs npm
+```bash
+sudo apt-get install nodejs npm
 sudo npm install -g express
 ```
 
 Install ffmpeg and dependencies for encoding
 
-```sudo apt-get install ffmpeg libfaac0 libx264-120 libvpx1
+```bash
+sudo apt-get install ffmpeg libfaac0 libx264-120 libvpx1
+```
+
+and install numm for analysis
+
+```bash
+sudo apt-get install python-numm
 ```
