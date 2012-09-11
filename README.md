@@ -32,6 +32,7 @@ Clone the repository and submodules
 git clone https://github.com/strob/interlace.git
 cd interlace
 git submodule init
+git submodule update
 ```
 
 Install dependencies for Node
