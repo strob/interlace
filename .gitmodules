@@ -1,3 +1,6 @@
 [submodule "lib/resumable"]
 	path = lib/resumable
 	url = https://github.com/23/resumable.js.git
+[submodule "lib/segment"]
+	path = lib/segment
+	url = https://github.com/strob/segment.git
