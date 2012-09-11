@@ -26,12 +26,6 @@ server infrastructure, ie. from offline media like SD cards.
 
 ## Installation
 
-Install dependencies
-
-```sudo apt-get install nodejs npm
-npm install socket.io
-```
-
 Clone the repository and submodules
 
 ```git clone https://github.com/strob/interlace.git
@@ -39,3 +33,13 @@ cd interlace
 git submodule init
 ```
 
+Install dependencies for Node
+
+```sudo apt-get install nodejs npm
+sudo npm install -g express
+```
+
+Install ffmpeg and dependencies for encoding
+
+```sudo apt-get install ffmpeg libfaac0 libx264-120 libvpx1
+```
