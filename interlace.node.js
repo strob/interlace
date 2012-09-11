@@ -1,40 +1,54 @@
 // InterLace Node.js server component
 
-var http = require('http')
-  , app = http.createServer(handle)
-  , fs = require('fs')
-  , url = require('url');
+var express = require('express');
+var resumable = require('resumable')('/tmp/InterLace_uploads/');
+var app = express();//.createServer();
 
-var resumable = require('resumable');
+// Static
+app.use(express.static(__dirname + '/static'));
 
-function handle(req, res) {
-    var r_url = url.parse(req.url, false);
+app.use(express.bodyParser());
 
-    // Force `/' to `index.html'
-    if(r_url.path == '/') {
-        r_url.path = '/index.html';
-    }
 
-    // Return .css, .html, .js, and .png as static files.
-    // XXX: security?
-    var ext = r_url.path.split('.');
-    ext = ext[ext.length-1];
-    if(ext in {css:1, html:1, js:1, png:1}) {
+// FILE UPLOADS
+// (copied from lib/resumable/samples/Node.js/app.js)
 
-        fs.readFile(__dirname + '/static' + r_url.path, function (err, data) {
-            if (err) {
-                res.writeHead(404);
-                return res.end('File not found: ' + r_url.path);
-            }
-            res.writeHead(200);
-            res.end(data);
+// Handle uploads through Resumable.js
+app.post('/upload', function(req, res){
+
+    // console.log(req);
+
+    resumable.post(req, function(status, filename, original_filename, identifier){
+        console.log('POST', status, original_filename, identifier);
+
+        res.send(status, {
+            // NOTE: Uncomment this funciton to enable cross-domain request.
+            //'Access-Control-Allow-Origin': '*'
         });
-    }
-    else {
-        res.writeHead(500);
-        res.end('Internal error');
-    }
-}
+    });
+});
 
-app.listen(1111, "127.0.0.1");
+// Handle cross-domain requests
+// NOTE: Uncomment this funciton to enable cross-domain request.
+/*
+  app.options('/upload', function(req, res){
+  console.log('OPTIONS');
+  res.send(true, {
+  'Access-Control-Allow-Origin': '*'
+  }, 200);
+  });
+*/
+
+// Handle status checks on chunks through Resumable.js
+app.get('/upload', function(req, res){
+    resumable.get(req, function(status, filename, original_filename, identifier){
+        console.log('GET', status);
+        res.send(status, (status == 'found' ? 200 : 404));
+    });
+});
+
+
+// --
+
+app.listen(1111);
 console.log('InterLace running at http://localhost:1111/');
