@@ -1,3 +1,5 @@
+# Please see http://readmes.numm.org/interlace3/ for the currently-maintained version of InterLace
+
 # InterLace
 ---
 html5 video archive teleputer
